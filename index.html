@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Penjadwalan CPU</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="app.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        footer span {
+            color: black;
+            font-style: italic;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+        }
+        
+        body {
+            background-color: #dbd7d0;
+        }
+        
+        table th {
+            background-color: #007BFF;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        
+        table {
+            background-color: #f5f5f5;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+
+<body class="">
+    <header>
+        <nav class="navbar navbar-dark bg-dark">
+            <span class="navbar-brand">
+                Simulator Penjadwalan CPU
+            </span>
+        </nav>
+    </header>
+    <div class="container">
+
+        <div class="row mb-5 pt-3" id="main">
+            <div class="col-9 process-list-container">
+                <table class="table table-bordered" id="tblProcessList">
+                    <thead>
+                        <tr>
+
+                            <th scope="col">ID Proses</th>
+                            <th scope="col">Waktu kedatangan</th>
+                            <th scope="col">Waktu Eksekusi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col">
+                        <input class="form-control mb-2" type="number" min="0" id="processID" placeholder="ID Proses" required>
+                    </div>
+                    <div class="col">
+                        <input class="form-control mb-2" type="number" min="0" id="arrivalTime" placeholder="Waktu Kedatangan">
+                    </div>
+                    <div class="col">
+                        <input class="form-control mb-2" type="number" min="0" id="burstTime" placeholder="Waktu Eksekusi">
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-primary" id="btnAddProcess">Tambahkan Proses</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3 border border-primary p-3 mb-2">
+                <div class="form">
+                    <div class="form-group">
+                        <label for="algorithmSelector">Pilih Metode Penjadwalan</label>
+                        <select class="form-control" id="algorithmSelector">
+                            <option value="optFCFS">First Come First Served</option>
+                            <option value="optSJF">Shortest Job First</option>
+                            <option value="optSRTF">Shortest Remaining Time First</option>
+                            <option value="optRR">Round Robin</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group-time-quantum">
+                        <label class="mt-1  ">Kuantum Waktu:</label>
+                        <input class="form-control mb-2" type="number" min="0" max="9" id="timeQuantum">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" id="btnCalculate">Menghitung</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-primary">
+            <div class="col-md-9">
+                <table class="table table-bordered" id="tblResults">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID Proses</th>
+                            <th scope="col">Waktu Kedatangan</th>
+                            <th scope="col">Waktu Eksekusi</th>
+                            <th scope="col">Waktu Selesai</th>
+                            <th scope="col">Waktu menunggu</th>
+                            <th scope="col">Waktu Penyelesaian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-3 border border-primary p-3 mb-2">
+                <div class="form">
+                    <div class="form-group">
+                        <label for="avgTurnaroundTime">Waktu Penyelesaian Rata-Rata</label>
+                        <input class="form-control" id="avgTurnaroundTime" type="number" placeholder="0" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="avgTurnaroundTime">Waktu Tunggu Rata-Rata</label>
+                        <input class="form-control" id="avgWaitingTime" type="number" placeholder="0" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="avgTurnaroundTime">Hasil</label>
+                        <input class="form-control" id="throughput" type="number" placeholder="0" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+    <div class="mb-5 mt-4 bg-light">
+        <div class="container">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    <footer class="page-footer bg-light p-1 mt-4">
+
+        <div class="footer-copyright text-center py-3">
+            <span>
+               Copyright &copy; <span>By Ahmad Maulidi Roofiad</span> |
+            <a target="_blank" href="https://github.com/Didin07/cpu-scheduling-sim">View Source on My Github</a>
+            </span>
+        </div>
+
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function isFacebookApp() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1);
+        }
+
+        function openInBrowser(target, browserScheme) {
+            var ifc = document.createElement("div");
+            ifc.innerHTML = `<iframe src='${browserScheme}${target}' style='width:0;height:0;border:0; border:none;visibility: hidden;'></iframe>`;
+            document.body.appendChild(ifc);
+        }
+        if (isFacebookApp()) {
+
+            openInBrowser(window.location.href, "googlechrome://navigate?url=");
+        }
+    </script>
+
+</body>
+
+</html>
